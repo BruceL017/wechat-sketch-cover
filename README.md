@@ -30,6 +30,7 @@ npx skills add https://github.com/BruceL017/wechat-sketch-cover
 - 构图：左侧准确标题，右侧内容隐喻插画。
 - 风格：米色纸张、深棕手绘线条、橙色与金色强调。
 - 文字：只允许文章标题；不生成副标题、标签、Logo 或水印。
+- 标题长度：2–35 个非空白 Unicode 字符（含标点）。
 - 后端：只使用 Codex 原生 imagegen。
 - 尝试次数：最多三次；仅当标题仍可读、错误是唯一剩余问题且属于局部字形偏差时，才以 BEST_EFFORT 交付并明确报告；其他失败不生成 cover.png。
 

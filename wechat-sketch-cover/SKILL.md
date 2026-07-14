@@ -2,7 +2,7 @@
 name: wechat-sketch-cover
 description: "Generate one WeChat Official Account article cover in a fixed warm hand-drawn notebook style and normalize it to exactly 1923x818 PNG. Use when the user asks to create or generate a 公众号封面, 微信公众号文章封面, 公众号暖色手绘封面, WeChat Official Account cover, WeChat article cover, or WeChat public-account article cover from an exact Chinese or Chinese-mixed title or one Markdown article. Do NOT use for generic covers, covers for platforms other than WeChat Official Accounts, cover critique, design advice, dimension/specification questions, prompt-only requests without image generation, body illustrations, other visual styles or dimensions, visual-only covers, brand overlays, image editing, photorealistic work, non-Markdown local documents, URL fetching, or publishing to WeChat."
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # WeChat Sketch Cover
@@ -42,7 +42,7 @@ Input procedure:
 4. Require the exact title to be one logical line with no Unicode control character, line separator, or paragraph separator. If it contains `\\n`, `\\r`, a tab, NUL, U+2028, U+2029, or another control character, ask for a clean single-line title and stop before creating OUTPUT_DIR; never silently normalize it.
 5. If both inline article text and a summary exist, use the article text as the factual source and the summary only as supplemental orientation. Inline text may be plain pasted text; local files must be Markdown.
 6. Reject URLs, multiple ambiguous files, unreadable or empty files, and local formats other than Markdown. This skill does not fetch source material or convert documents.
-7. Count non-whitespace Unicode characters in the exact title, including punctuation. Accept titles from 2 through 30 characters; if the count is outside that range, ask for a supported title and stop.
+7. Count non-whitespace Unicode characters in the exact title, including punctuation. Accept titles from 2 through 35 characters; if the count is outside that range, ask for a supported title and stop.
 8. Create a slug from the exact title by retaining Unicode letters and digits, replacing punctuation or whitespace runs with hyphens, trimming hyphens, and limiting the result to 40 characters; if empty, use `wechat-cover`.
 9. Set `OUTPUT_DIR` to `WORKDIR/wechat-sketch-cover-output/{slug}/`. Create it with exclusive directory semantics, using `-YYYYMMDD-HHMMSS`, then `-2`, `-3`, and so on only for existing paths. On any other creation error, report it and stop. Create `OUTPUT_DIR/prompts/` and `OUTPUT_DIR/candidates/`.
 
@@ -171,7 +171,7 @@ Declare a successful WeChatSketchCoverBundle only after cover.png verification s
 
 | Condition | Required handling |
 |---|---|
-| Exact title is missing, conflicts with the Markdown title, or falls outside 2–30 non-whitespace characters | Ask for one supported exact title; generate nothing |
+| Exact title is missing, conflicts with the Markdown title, or falls outside 2–35 non-whitespace characters | Ask for one supported exact title; generate nothing |
 | Request explicitly requires an excluded style, layout, dimension, branding, editing mode, or backend | State the fixed supported contract and stop before creating OUTPUT_DIR |
 | Source is unreadable, empty, ambiguous, a URL, or not Markdown | Request supported input; generate nothing |
 | Required bundled resource is missing | Report the exact missing path; generate nothing |

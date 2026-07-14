@@ -20,7 +20,7 @@ class SkillContractTests(unittest.TestCase):
         frontmatter = yaml.safe_load(match.group(1))
         self.assertEqual(frontmatter["name"], "wechat-sketch-cover")
         self.assertTrue(frontmatter["description"])
-        self.assertEqual(frontmatter["metadata"]["version"], "1.0.0")
+        self.assertEqual(frontmatter["metadata"]["version"], "1.0.1")
 
         required = [
             SKILL_ROOT / "agents" / "openai.yaml",
@@ -47,7 +47,7 @@ class SkillContractTests(unittest.TestCase):
         self.assertNotIn("attempt-04", skill_text)
         self.assertIn("attempt-03.md", skill_text)
         self.assertIn("absolute failure", style_text)
-        self.assertIn("2 through 30 characters", skill_text)
+        self.assertIn("2 through 35 characters", skill_text)
         self.assertIn("exclusive directory semantics", skill_text)
         self.assertIn("outside the exact supplied title", style_text)
         self.assertIn("other than the installed imagegen skill", skill_text)
