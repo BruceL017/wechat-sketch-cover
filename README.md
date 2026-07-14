@@ -4,6 +4,8 @@ wechat-sketch-cover 是一个固定风格的 Codex Skill：根据准确的中文
 
 它不选择风格、不切换比例、不加品牌，也不会发布到微信公众号。
 
+行为变更时递增 `wechat-sketch-cover/SKILL.md` frontmatter 中 `metadata.version` 的语义版本。
+
 ## 安装
 
 ~~~
@@ -29,7 +31,7 @@ npx skills add https://github.com/BruceL017/wechat-sketch-cover
 - 风格：米色纸张、深棕手绘线条、橙色与金色强调。
 - 文字：只允许文章标题；不生成副标题、标签、Logo 或水印。
 - 后端：只使用 Codex 原生 imagegen。
-- 尝试次数：最多三次；仍有标题错误时交付最佳版本并明确报告。
+- 尝试次数：最多三次；仅当标题仍可读、错误是唯一剩余问题且属于局部字形偏差时，才以 BEST_EFFORT 交付并明确报告；其他失败不生成 cover.png。
 
 图片归一化需要 Python 3 和 Pillow 11.3.0：
 
