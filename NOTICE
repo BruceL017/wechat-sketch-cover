@@ -12,8 +12,9 @@ Modification notice (2026-07-14):
 
 The upstream multi-style cover generator was reduced to a standalone Codex
 Skill named wechat-sketch-cover. It has one warm hand-drawn notebook style,
-one left-title/right-illustration composition, one native Codex image backend,
-no preference file, no branding, and one final PNG size of 1923 x 818.
+one left-title/right-illustration composition, backend-agnostic candidate
+generation, no preference file, no branding, and one final PNG size of
+1923 x 818.
 
 The fixed style specification was rewritten from the upstream warm palette,
 hand-drawn rendering guidance, and cover workflow. The bundled OfferPilot

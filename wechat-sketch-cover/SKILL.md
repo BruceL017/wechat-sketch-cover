@@ -2,29 +2,29 @@
 name: wechat-sketch-cover
 description: "Generate one WeChat Official Account article cover in a fixed warm hand-drawn notebook style and normalize it to exactly 1923x818 PNG. Use when the user asks to create or generate a 公众号封面, 微信公众号文章封面, 公众号暖色手绘封面, WeChat Official Account cover, WeChat article cover, or WeChat public-account article cover from an exact Chinese or Chinese-mixed title or one Markdown article. Do NOT use for generic covers, covers for platforms other than WeChat Official Accounts, cover critique, design advice, dimension/specification questions, prompt-only requests without image generation, body illustrations, other visual styles or dimensions, visual-only covers, brand overlays, image editing, photorealistic work, non-Markdown local documents, URL fetching, or publishing to WeChat."
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
 ---
 
 # WeChat Sketch Cover
 
-Create exactly one fixed-format WeChat article cover. The style, layout, dimensions, text policy, backend, and output contract are not configurable.
+Create exactly one fixed-format WeChat article cover. The style, layout, dimensions, text policy, and output contract are not configurable. The candidate-generation backend is open.
 
 ## Fixed contract
 
-- MUST generate one raster cover with Codex native image generation.
+- MUST generate one raster cover with an available image-generation or programmatic rendering backend.
 - MUST use the fixed style in references/style-spec.md.
 - MUST render the supplied title verbatim on the left for a passing candidate. After attempt 03 only, an otherwise compliant candidate may be delivered as BEST_EFFORT when the title remains readable in the required left two-or-three-line layout and title accuracy is the sole failed gate; that explicit exception overrides only the verbatim-title gate and MUST be reported.
 - MUST normalize every candidate to a PNG measuring exactly 1923 x 818 pixels.
 - MUST allow only the supplied title as readable text. Decorative scribble lines may imply interface content but MUST NOT form additional words.
-- MUST NOT offer style, palette, aspect-ratio, font, branding, backend, or layout choices.
-- MUST NOT use EXTEND.md, any image-generation skill other than the installed imagegen skill, an API/CLI image fallback, SVG, HTML, CSS, or canvas art.
-- MUST NOT paint over, erase, replace, or repair generated title text programmatically.
+- MUST NOT offer style, palette, aspect-ratio, font, branding, or layout choices.
+- MAY use installed image skills, built-in generation, CLI, API, SVG, HTML, CSS, Canvas, or any other available image backend for candidate creation.
+- MAY compose, edit, overlay, replace, or repair candidate content programmatically, including exact title rendering, provided the resulting candidate still passes every fixed visual and output gate.
 
 Treat the directory containing this file as SKILL_ROOT and the agent's current working directory as WORKDIR.
 
 Named artifacts: a diagnostic output directory contains source.md and every prompt or candidate actually created; a successful WeChatSketchCoverBundle is that directory plus verified cover.png. WeChatSketchCoverResult is the separate fixed Markdown delivery record. A STOP run may leave diagnostic artifacts but MUST NOT claim a successful Bundle.
 
-Ownership: WORKDIR is the agent process's current working directory. Persist only inside the newly selected OUTPUT_DIR. The native imagegen tool may return a temporary raster path elsewhere; read it only as input to normalization, do not modify or persist it, and stop if no readable local path is returned. NEVER modify the source Markdown file, bundled Skill files, or any path outside OUTPUT_DIR.
+Ownership: WORKDIR is the agent process's current working directory. Persist only inside the newly selected OUTPUT_DIR. A backend may return a temporary source or raster path elsewhere; read it only as input, do not modify it, and copy or render any retained artifact into a new path inside OUTPUT_DIR. Stop if no readable or renderable local result is available. NEVER modify the source Markdown file, bundled Skill files, or any path outside OUTPUT_DIR.
 
 ## Workflow
 
@@ -71,7 +71,16 @@ If Pillow is unavailable, stop before generation and report:
 
 Do not install it without user authorization.
 
-Look up the installed `imagegen` skill and invoke its native built-in generation path. The success signal is a tool result containing one readable local raster-image path. If the skill lookup or native tool is unavailable, stop before creating a prompt or image. Do not switch to CLI/API mode or another backend.
+Resolve the candidate-generation backend:
+
+1. If the user names a backend or generation method, use it.
+2. Otherwise choose any available path that can produce a readable local raster image or a local source that can be rendered to one.
+3. Permitted paths include installed image skills, built-in image generation, CLI, API, SVG, HTML, CSS, Canvas, and other image backends. None of these methods is prohibited.
+4. For SVG, HTML, CSS, Canvas, or another non-raster source, use an available renderer to produce a readable local raster before normalization.
+5. Do not stop solely because Codex native image generation is unavailable. Continue with any other available backend.
+6. If no available backend can produce or render a readable local raster, stop and report what was attempted.
+
+Record the selected backend or method for delivery.
 
 ### 3. Derive one visual concept
 
@@ -88,7 +97,7 @@ If only a title is supplied, derive these fields from the title without adding f
 
 Use the prompt template in references/style-spec.md. Substitute the exact title, factual summary, core meaning, metaphor, and objects. Do not add visible labels beyond the exact title.
 
-Write the complete final prompt to OUTPUT_DIR/prompts/attempt-01.md before image generation. The prompt file is the reproducibility record.
+Write the complete final prompt or build specification to OUTPUT_DIR/prompts/attempt-01.md before candidate generation. The prompt file is the reproducibility record.
 
 ### 5. Generate and evaluate candidates
 
@@ -114,19 +123,20 @@ Status contract:
 
 No other status is valid; an unknown status is a STOP diagnostic.
 
-NEVER reuse a prompt path or candidate path. NEVER repair a failed bitmap. A retry is a new prompt and a new image.
+NEVER reuse or overwrite a prompt path, source path, or candidate path. A retry may keep or switch backends and may correct observed defects with image generation, editing, or programmatic composition, but it must write new artifacts.
 
 #### Local procedure: Run one candidate attempt (do not spawn a subagent)
 
-1. Use the imagegen skill's default built-in generation path to generate one ultra-wide raster image from the current two-digit prompt path: `prompts/attempt-01.md`, `prompts/attempt-02.md`, or `prompts/attempt-03.md`.
-2. If generation does not return one readable local raster-image path, return `RETRY_NO_CANDIDATE` on attempts 01–02. On attempt 03, return `SELECT` when any earlier readable `CandidateQARecord` exists so the final selector can choose among those records; otherwise return `STOP`. Include the exact missing-path diagnostic.
-3. Run `python3 "SKILL_ROOT/scripts/normalize_cover.py" "GENERATED_PATH" "OUTPUT_PATH"` with the corresponding destination `OUTPUT_DIR/candidates/attempt-01.png`, `OUTPUT_DIR/candidates/attempt-02.png`, or `OUTPUT_DIR/candidates/attempt-03.png`. If the command exits nonzero, return `STOP` with stderr and the exit code. If it succeeds but the expected candidate path is absent or unreadable, return `STOP` with that absolute path and diagnostic.
-4. Inspect the normalized candidate with view_image. If it cannot be inspected, return `STOP` with the absolute path.
-5. Evaluate every gate in the QA checklist and retain a `CandidateQARecord` containing the candidate path, PASS/RETRY/SELECT status, failed gates, absolute failures, and visible title defects. Return `PASS` only when all gates pass. If an inspectable candidate has an absolute visual failure, return `RETRY` on attempts 01–02 with that observed failure as the targeted defect, and return `SELECT` on attempt 03 so the final selector discards it. If an inspectable candidate has a non-absolute QA failure, return `RETRY` on attempts 01–02 and `SELECT` on attempt 03. Return `STOP` for unreadable output, normalization failure, uninspectable output, or any other non-retryable condition.
+1. Use the selected backend and the current two-digit prompt path—`prompts/attempt-01.md`, `prompts/attempt-02.md`, or `prompts/attempt-03.md`—to create one ultra-wide candidate source or raster image.
+2. If the backend produces SVG, HTML, CSS, Canvas, or another non-raster source, save each retained source or intermediate under a new attempt-specific path in OUTPUT_DIR/candidates/ and render it to a readable local raster. Programmatic composition and exact-title overlays are allowed during this step.
+3. If candidate generation or rendering does not produce one readable local raster-image path, return `RETRY_NO_CANDIDATE` on attempts 01–02. On attempt 03, return `SELECT` when any earlier readable `CandidateQARecord` exists so the final selector can choose among those records; otherwise return `STOP`. Include the exact backend and missing-path diagnostic.
+4. Run `python3 "SKILL_ROOT/scripts/normalize_cover.py" "GENERATED_PATH" "OUTPUT_PATH"` with the corresponding destination `OUTPUT_DIR/candidates/attempt-01.png`, `OUTPUT_DIR/candidates/attempt-02.png`, or `OUTPUT_DIR/candidates/attempt-03.png`. If the command exits nonzero, return `STOP` with stderr and the exit code. If it succeeds but the expected candidate path is absent or unreadable, return `STOP` with that absolute path and diagnostic.
+5. Inspect the normalized candidate with view_image. If it cannot be inspected, return `STOP` with the absolute path.
+6. Evaluate every gate in the QA checklist and retain a `CandidateQARecord` containing the candidate path, backend, PASS/RETRY/SELECT status, failed gates, absolute failures, and visible title defects. Return `PASS` only when all gates pass. If an inspectable candidate has an absolute visual failure, return `RETRY` on attempts 01–02 with that observed failure as the targeted defect, and return `SELECT` on attempt 03 so the final selector discards it. If an inspectable candidate has a non-absolute QA failure, return `RETRY` on attempts 01–02 and `SELECT` on attempt 03. Return `STOP` for unreadable output, normalization failure, uninspectable output, or any other non-retryable condition.
 
 #### Local procedure: Compile targeted retry (do not spawn a subagent)
 
-Write the complete next prompt to the next two-digit path: `prompts/attempt-02.md` when the current attempt is 01, or `prompts/attempt-03.md` when the current attempt is 02. Keep the fixed style and composition, repeat the title verbatim, name the observed defect, and request only that targeted correction. Return the next prompt path.
+Write the complete next prompt or build specification to the next two-digit path: `prompts/attempt-02.md` when the current attempt is 01, or `prompts/attempt-03.md` when the current attempt is 02. Keep the fixed style and composition, repeat the title verbatim, name the observed defect, and request only that targeted correction. The retry may keep or switch backends. Return the next prompt path.
 
 #### Local procedure: Select after final attempt (do not spawn a subagent)
 
@@ -157,7 +167,7 @@ Delivery record `WeChatSketchCoverResult` MUST use this fixed Markdown template 
     Selected attempt: <n / total; omit when no attempt ran>
     Title status: exact | best-effort: <visible defects> | unavailable
     Verified format: PNG, 1923 x 818 | not verified
-    Backend: Codex native image generation | not run
+    Backend: <backend used> | not run
     Prompts: <absolute paths or none>
     Candidates: <absolute paths or none>
     Absolute-failure checks: passed | failed: <details> | not applicable
@@ -172,17 +182,18 @@ Declare a successful WeChatSketchCoverBundle only after cover.png verification s
 | Condition | Required handling |
 |---|---|
 | Exact title is missing, conflicts with the Markdown title, or falls outside 2–35 non-whitespace characters | Ask for one supported exact title; generate nothing |
-| Request explicitly requires an excluded style, layout, dimension, branding, editing mode, or backend | State the fixed supported contract and stop before creating OUTPUT_DIR |
+| Request explicitly requires an excluded style, layout, dimension, branding, or editing mode | State the fixed supported contract and stop before creating OUTPUT_DIR |
 | Source is unreadable, empty, ambiguous, a URL, or not Markdown | Request supported input; generate nothing |
 | Required bundled resource is missing | Report the exact missing path; generate nothing |
 | WORKDIR is unavailable or not writable | Report the exact workspace error; generate nothing |
 | Markdown frontmatter is malformed or has no usable title | Ask for a supported exact title or Markdown file; generate nothing |
 | Required Unicode character counting is unavailable | Report the runtime limitation; generate nothing |
 | Pillow is unavailable | Report the pinned install command; do not install or generate |
-| Native Codex image generation is unavailable | Stop; do not select another backend |
-| Native generation returns a path outside OUTPUT_DIR | Read it only as transient normalization input; never persist or modify it; stop if it cannot be read |
+| A preferred or first-choice backend is unavailable | Use another available backend unless the user explicitly required that backend |
+| A backend returns a source or raster path outside OUTPUT_DIR | Read it only as transient input; never modify it; copy or render retained artifacts into OUTPUT_DIR |
+| No available backend can produce or render a readable local raster | Report every attempted backend and create no cover.png |
 | OUTPUT_DIR cannot be created, or any source, prompt, candidate, or final artifact cannot be written/copied | Report the exact path and filesystem error; stop immediately; do not write elsewhere or claim completion |
-| Generation fails | Retry only within the three-attempt limit with a saved prompt |
+| Generation or rendering fails | Retry only within the three-attempt limit with a saved prompt or build specification; the retry may switch backends |
 | Three generation attempts produce no readable candidate | Report all prompt paths; create no cover.png |
 | Title remains wrong after three attempts, and title inaccuracy is the sole failed QA gate while the title remains readable, localized, and in the required two-or-three-line left layout | Deliver the otherwise compliant best candidate as BEST_EFFORT and list visible title defects |
 | Title remains wrong after three attempts and any non-title QA gate also fails | Reject every such candidate, create no cover.png, and report the diagnostics |
@@ -205,7 +216,7 @@ Cover: /workspace/wechat-sketch-cover-output/为什么-ai-工作流总是难以�
 Selected attempt: 2 / 2
 Title status: exact
 Verified format: PNG, 1923 x 818
-Backend: Codex native image generation
+Backend: SVG + headless browser
 Prompts: /workspace/wechat-sketch-cover-output/为什么-ai-工作流总是难以复用/prompts/attempt-01.md, /workspace/wechat-sketch-cover-output/为什么-ai-工作流总是难以复用/prompts/attempt-02.md
 Candidates: /workspace/wechat-sketch-cover-output/为什么-ai-工作流总是难以复用/candidates/attempt-01.png, /workspace/wechat-sketch-cover-output/为什么-ai-工作流总是难以复用/candidates/attempt-02.png
 Absolute-failure checks: passed
@@ -231,12 +242,6 @@ Absolute-failure checks: passed; no non-title QA defect, extra readable text, br
 WRONG: The user requests a blue 16:9 photographic cover, and the agent silently adapts this skill.
 
 Reason: color family, rendering, layout, and dimensions are fixed. State the supported contract and do not generate with this skill.
-</bad-example>
-
-<bad-example>
-WRONG: The generated Chinese title is misspelled, so the agent covers it with a programmatically drawn text layer.
-
-Reason: bitmap text repair is forbidden. Generate a new candidate, or after three attempts deliver the best candidate with an explicit defect report.
 </bad-example>
 
 <bad-example>

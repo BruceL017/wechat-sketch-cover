@@ -20,7 +20,7 @@ class SkillContractTests(unittest.TestCase):
         frontmatter = yaml.safe_load(match.group(1))
         self.assertEqual(frontmatter["name"], "wechat-sketch-cover")
         self.assertTrue(frontmatter["description"])
-        self.assertEqual(frontmatter["metadata"]["version"], "1.0.1")
+        self.assertEqual(frontmatter["metadata"]["version"], "1.1.0")
 
         required = [
             SKILL_ROOT / "agents" / "openai.yaml",
@@ -50,7 +50,15 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("2 through 35 characters", skill_text)
         self.assertIn("exclusive directory semantics", skill_text)
         self.assertIn("outside the exact supplied title", style_text)
-        self.assertIn("other than the installed imagegen skill", skill_text)
+        self.assertIn("CLI, API, SVG, HTML, CSS, Canvas", skill_text)
+        self.assertIn("Backend: <backend used> | not run", skill_text)
+        self.assertIn(
+            "Do not stop solely because Codex native image generation is unavailable",
+            skill_text,
+        )
+        self.assertNotIn("other than the installed imagegen skill", skill_text)
+        self.assertNotIn("Do not switch to CLI/API mode or another backend", skill_text)
+        self.assertNotIn("NEVER repair a failed bitmap", skill_text)
         self.assertIn("stop before creating OUTPUT_DIR", skill_text)
 
     def test_style_reference_dimensions(self) -> None:

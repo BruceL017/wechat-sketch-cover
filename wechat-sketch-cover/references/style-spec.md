@@ -81,7 +81,7 @@ This specification is consumed by the ordered workflow in SKILL.md. Before gener
 
 1. Resolve and validate the exact title and optional content source.
 2. Derive the summary, core meaning, metaphor, and objects.
-3. Compile one prompt and generate one candidate with native imagegen.
+3. Compile one prompt or build specification and generate one candidate with any available backend.
 4. Normalize the candidate to 1923 x 818 and run every QA gate.
 5. Retry, select BEST_EFFORT, or stop according to the SKILL.md status contract.
 6. Verify and deliver the named artifact, then end.
