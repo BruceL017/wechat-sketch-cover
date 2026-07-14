@@ -2,7 +2,7 @@
 name: wechat-sketch-cover
 description: "Generate one WeChat Official Account article cover in a fixed warm hand-drawn notebook style and normalize it to exactly 1923x818 PNG. Use when the user asks to create or generate a 公众号封面, 微信公众号文章封面, 公众号暖色手绘封面, WeChat Official Account cover, WeChat article cover, or WeChat public-account article cover from an exact Chinese or Chinese-mixed title or one Markdown article. Do NOT use for generic covers, covers for platforms other than WeChat Official Accounts, cover critique, design advice, dimension/specification questions, prompt-only requests without image generation, body illustrations, other visual styles or dimensions, visual-only covers, brand overlays, image editing, photorealistic work, non-Markdown local documents, URL fetching, or publishing to WeChat."
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # WeChat Sketch Cover
@@ -13,6 +13,7 @@ Create exactly one fixed-format WeChat article cover. The style, layout, dimensi
 
 - MUST generate one raster cover with an available image-generation or programmatic rendering backend.
 - MUST use the fixed style in references/style-spec.md.
+- MUST use the fixed Chinese handwritten title treatment defined there: bold brush strokes, hand-written Chinese calligraphy title forms, and marker / brush handwritten Chinese lettering.
 - MUST render the supplied title verbatim on the left for a passing candidate. After attempt 03 only, an otherwise compliant candidate may be delivered as BEST_EFFORT when the title remains readable in the required left two-or-three-line layout and title accuracy is the sole failed gate; that explicit exception overrides only the verbatim-title gate and MUST be reported.
 - MUST normalize every candidate to a PNG measuring exactly 1923 x 818 pixels.
 - MUST allow only the supplied title as readable text. Decorative scribble lines may imply interface content but MUST NOT form additional words.

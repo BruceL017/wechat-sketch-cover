@@ -39,7 +39,7 @@ Hex values are rendering guidance. NEVER show color names, role labels, or hex v
 
 - The exact article title is the visual anchor on the left.
 - Break the title naturally into two or three large lines without changing any character.
-- Use expressive Chinese brush-marker or hand-lettered forms in deep brown. For mixed titles, preserve every Latin letter and digit verbatim in the same hand-lettered treatment.
+- Use one fixed Chinese handwritten title treatment in deep brown: bold brush strokes, hand-written Chinese calligraphy title forms, and marker / brush handwritten Chinese lettering. For mixed titles, preserve every Latin letter and digit verbatim in the same hand-lettered treatment.
 - Add one loose orange underline beneath the title and at most three small orange doodle accents.
 - Place one coherent conceptual scene on the right. It must express one core meaning through physical objects and actions.
 - Right-side panels may contain abstract lines, dots, or checkmarks, but no additional readable words.
@@ -123,7 +123,7 @@ Content-grounded objects:
 Canvas and composition:
 - Compose for an approximately 2.35:1 ultra-wide canvas that will be normalized to exactly 1923 x 818.
 - Keep all important content at least 64 pixels from the canvas edges.
-- Reserve the left 40% for the title: two or three large lines, deep-brown Chinese brush-marker lettering, with one loose orange underline.
+- Reserve the left 40% for the title: two or three large lines in deep-brown, bold marker / brush handwritten Chinese lettering with a hand-written Chinese calligraphy feel, plus one loose orange underline.
 - Use the right 60% for one coherent hand-drawn conceptual scene.
 - Keep a clear gap between title and illustration.
 
@@ -160,7 +160,7 @@ A candidate returns `PASS` only when every gate below is observed in the normali
 
 1. The title matches the supplied title character-for-character and is readable.
 2. No other readable text appears; interface-like marks remain abstract scribbles, dots, arrows, or checkmarks.
-3. The title is the dominant element in the left zone, split into two or three large lines, and the coherent content metaphor occupies the right zone.
+3. The title is the dominant element in the left zone, split into two or three large lines, and uses the fixed bold marker / brush handwritten Chinese treatment with a hand-written Chinese calligraphy feel; the coherent content metaphor occupies the right zone.
 4. Important title strokes and illustration details stay at least 64 pixels from every edge.
 5. There is one loose orange underline beneath the title and no more than three small orange doodle accents.
 6. A clear gap separates the title and illustration, with visible breathing room rather than edge-crowded decoration.

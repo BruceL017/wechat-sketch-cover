@@ -27,6 +27,7 @@ npx skills add https://github.com/BruceL017/wechat-sketch-cover
 - 最终尺寸：1923 x 818，约 2.35:1。
 - 构图：左侧准确标题，右侧内容隐喻插画。
 - 风格：米色纸张、深棕手绘线条、橙色与金色强调。
+- 标题字体：中文手写标题字体，粗笔刷、手写毛笔风，marker / brush handwritten Chinese。
 - 文字：只允许文章标题；不生成副标题、标签、Logo 或水印。
 - 标题长度：2–35 个非空白 Unicode 字符（含标点）。
 - 后端：开放使用 Codex 原生 imagegen、其他图片 Skill、CLI、API、SVG、HTML、CSS、Canvas 或其他可用图片后端。

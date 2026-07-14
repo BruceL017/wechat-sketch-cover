@@ -20,7 +20,7 @@ class SkillContractTests(unittest.TestCase):
         frontmatter = yaml.safe_load(match.group(1))
         self.assertEqual(frontmatter["name"], "wechat-sketch-cover")
         self.assertTrue(frontmatter["description"])
-        self.assertEqual(frontmatter["metadata"]["version"], "1.1.0")
+        self.assertEqual(frontmatter["metadata"]["version"], "1.1.1")
 
         required = [
             SKILL_ROOT / "agents" / "openai.yaml",
@@ -43,6 +43,9 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("left", combined.lower())
         self.assertIn("right", combined.lower())
         self.assertIn("MUST NOT offer style", skill_text)
+        self.assertIn("marker / brush handwritten Chinese lettering", skill_text)
+        self.assertIn("bold marker / brush handwritten Chinese", style_text)
+        self.assertIn("hand-written Chinese calligraphy", style_text)
         self.assertIn("NEVER pass the reference image", style_text)
         self.assertNotIn("attempt-04", skill_text)
         self.assertIn("attempt-03.md", skill_text)
