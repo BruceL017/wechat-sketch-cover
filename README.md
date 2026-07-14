@@ -2,8 +2,6 @@
 
 wechat-sketch-cover 是一个固定风格的 Codex Skill：根据准确的中文标题和可选文章内容，生成一张暖色手绘笔记风的微信公众号封面，并输出严格为 1923 x 818 的 PNG。
 
-它不选择风格、不切换比例、不加品牌，也不会发布到微信公众号。
-
 行为变更时递增 `wechat-sketch-cover/SKILL.md` frontmatter 中 `metadata.version` 的语义版本。
 
 ## 安装
