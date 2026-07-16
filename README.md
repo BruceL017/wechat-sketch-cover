@@ -64,4 +64,4 @@ python3 /path/to/skill-creator/scripts/quick_validate.py wechat-sketch-cover
 
 本项目从 JimLiu/baoyu-skills 的 baoyu-cover-image 中抽取并重写了暖色手绘封面流程，来源提交为 6b7a2e417500561a5ecdd0b168332f4142584617。
 
-项目按 MIT License 发布。上游归属和修改说明见 LICENSE 与 NOTICE。仓库中的风格参考图已由仓库所有者确认可公开再分发，仅用于 QA，不会传给图片模型。
+项目按 MIT License 发布。上游归属和修改说明见 LICENSE 与 NOTICE。
